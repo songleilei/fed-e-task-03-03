@@ -21,7 +21,13 @@
 
       <div class="row">
         <div class="col-xs-12 col-md-8 offset-md-2">
-          <article-comments :article="article" />
+          <article-comments :article="article" v-if="user" />
+
+          <p v-else>
+            <nuxt-link class="" to="/login">Sign in</nuxt-link
+            >&nbsp;or&nbsp;<nuxt-link class="" to="/register">sign up</nuxt-link
+            >&nbsp;to add comments on this article.
+          </p>
         </div>
       </div>
     </div>
@@ -33,12 +39,15 @@ import { getArticleDetail } from '@/api/article'
 import MarkdownIt from 'markdown-it'
 import ArticleMeta from './components/article-mata'
 import ArticleComments from './components/article-comments'
+import { mapState } from 'vuex'
 
 export default {
   name: 'ArticleIndex',
+  computed: {
+    ...mapState(['user']),
+  },
   async asyncData({ params }) {
     const { data } = await getArticleDetail(params.slug)
-    console.log('data: ', data)
     const { article } = data
     const md = new MarkdownIt()
     article.body = md.render(article.body)

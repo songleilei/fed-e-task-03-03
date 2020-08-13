@@ -7,7 +7,7 @@
           username: article.author.username,
         },
       }"
-      ><img :src="article.author.image"
+      ><img :src="(article.author && article.author.image) || ''"
     /></nuxt-link>
     <div class="info">
       <nuxt-link

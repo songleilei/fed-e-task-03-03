@@ -108,6 +108,15 @@
               <h1>{{ article.title }}</h1>
               <p>{{ article.description }}</p>
               <span>Read more...</span>
+              <ul class="tag-list">
+                <li
+                  class="tag-default tag-pill tag-outline"
+                  v-for="tag in article.tagList"
+                  :key="tag"
+                >
+                  {{ tag }}
+                </li>
+              </ul>
             </nuxt-link>
           </div>
 
@@ -217,13 +226,23 @@ export default {
       article.loading = true
       if (article.favorited) {
         // 取消点赞
-        await deleteFavorite(article.slug)
-        article.favorited = false
-        article.favoritesCount -= 1
+        try {
+          await deleteFavorite(article.slug)
+          article.favorited = false
+          article.favoritesCount -= 1
+        } catch (error) {
+          console.log('error: ', error)
+          alert('please login')
+        }
       } else {
-        await addFavorite(article.slug)
-        article.favorited = true
-        article.favoritesCount += 1
+        try {
+          await addFavorite(article.slug)
+          article.favorited = true
+          article.favoritesCount += 1
+        } catch (error) {
+          console.log('error: ', error)
+          alert('please login')
+        }
       }
       article.loading = false
     },

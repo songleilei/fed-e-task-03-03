@@ -9,7 +9,7 @@
         ></textarea>
       </div>
       <div class="card-footer">
-        <img :src="user.image" class="comment-author-img" />
+        <img :src="user && user.image" class="comment-author-img" />
         <button class="btn btn-sm btn-primary">
           Post Comment
         </button>
@@ -32,7 +32,10 @@
             },
           }"
         >
-          <img :src="comment.author.image" class="comment-author-img" />
+          <img
+            :src="comment.author && comment.author.image"
+            class="comment-author-img"
+          />
         </nuxt-link>
         &nbsp;
         <nuxt-link
