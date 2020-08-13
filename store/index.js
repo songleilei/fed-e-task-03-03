@@ -15,6 +15,12 @@ const mutations = {
   },
 }
 
+const getters = {
+  currentUser(state) {
+    return state.user
+  },
+}
+
 const actions = {
   // nuxtServerInit 是一个特殊的 action 方法
   // 这个 action 会在服务端渲染期间自动调用
@@ -37,4 +43,4 @@ const actions = {
   },
 }
 
-export { state, mutations, actions }
+export { state, mutations, actions, getters }
