@@ -22,32 +22,50 @@
       >
       <span class="date">{{ article.createdAt | date('MMM DD, YYYY') }}</span>
     </div>
-    <button
+    <nuxt-link
+      v-if="user.username === article.author.username"
       class="btn btn-sm btn-outline-secondary"
-      :class="{ active: article.author.following }"
+      :to="{
+        name: 'editor',
+        params: {
+          slug: article.slug,
+        },
+      }"
     >
-      <i class="ion-plus-round"></i>
-      &nbsp; {{ article.author.username }}
-    </button>
+      <i class="ion-edit"></i>
+      &nbsp; Edit Article
+    </nuxt-link>
     &nbsp;&nbsp;
     <button
+      v-if="user.username === article.author.username"
       class="btn btn-sm btn-outline-primary"
-      :class="{ active: article.favorited }"
+      @click="deletePost"
     >
-      <i class="ion-heart"></i>
-      &nbsp; Favorite Post
-      <span class="counter">({{ article.favoritesCount }})</span>
+      <i class="ion-trash-a"></i>
+      &nbsp; Delete Article
     </button>
   </div>
 </template>
 
 <script>
+import { mapState } from 'vuex'
+import { deleteArticle } from '@/api/article'
 export default {
   name: 'ArticleMeta',
   props: {
     article: {
       type: Object,
       required: true,
+    },
+  },
+  computed: {
+    ...mapState(['user']),
+  },
+  methods: {
+    deletePost() {
+      deleteArticle(this.article.slug).then((res) => {
+        this.$router.push('/')
+      })
     },
   },
 }

@@ -15,19 +15,9 @@
 
       <hr />
 
-      <div class="article-actions">
-        <article-meta :article="article" />
-      </div>
-
       <div class="row">
         <div class="col-xs-12 col-md-8 offset-md-2">
-          <article-comments :article="article" v-if="user" />
-
-          <p v-else>
-            <nuxt-link class="" to="/login">Sign in</nuxt-link
-            >&nbsp;or&nbsp;<nuxt-link class="" to="/register">sign up</nuxt-link
-            >&nbsp;to add comments on this article.
-          </p>
+          <article-comments :article="article" />
         </div>
       </div>
     </div>
@@ -47,12 +37,30 @@ export default {
     ...mapState(['user']),
   },
   async asyncData({ params }) {
-    const { data } = await getArticleDetail(params.slug)
-    const { article } = data
-    const md = new MarkdownIt()
-    article.body = md.render(article.body)
-    return {
-      article,
+    try {
+      const { data } = await getArticleDetail(params.slug)
+      const { article } = data
+      const md = new MarkdownIt()
+      article.body = md.render(article.body)
+      return {
+        article,
+      }
+    } catch (error) {
+      console.log('error: ', error)
+      return {
+        article: {
+          author: { username: '', bio: '', image: '' },
+          body: '',
+          createdAt: '',
+          description: '',
+          favorited: false,
+          favoritesCount: 0,
+          slug: '',
+          tagList: [],
+          title: '',
+          updatedAt: '',
+        },
+      }
     }
   },
   components: {

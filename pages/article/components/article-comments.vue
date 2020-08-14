@@ -1,11 +1,16 @@
 <template>
   <div>
-    <form class="card comment-form">
+    <form
+      class="card comment-form"
+      v-if="user"
+      @submit.prevent="publishComment"
+    >
       <div class="card-block">
         <textarea
           class="form-control"
           placeholder="Write a comment..."
           rows="3"
+          v-model="commentInput"
         ></textarea>
       </div>
       <div class="card-footer">
@@ -15,6 +20,12 @@
         </button>
       </div>
     </form>
+
+    <p v-else>
+      <nuxt-link class="" to="/login">Sign in</nuxt-link
+      >&nbsp;or&nbsp;<nuxt-link class="" to="/register">sign up</nuxt-link
+      >&nbsp;to add comments on this article.
+    </p>
 
     <div class="card" v-for="comment in comments" :key="comment.id">
       <div class="card-block">
@@ -58,7 +69,7 @@
 </template>
 
 <script>
-import { getArticleComments } from '@/api/article'
+import { getArticleComments, postArticleComments } from '@/api/article'
 import { mapState } from 'vuex'
 
 export default {
@@ -72,14 +83,28 @@ export default {
   data() {
     return {
       comments: [],
+      commentInput: '',
     }
   },
   async mounted() {
-    const { data } = await getArticleComments(this.article.slug)
-    this.comments = data.comments
+    if (this.article.slug) {
+      const { data } = await getArticleComments(this.article.slug)
+      this.comments = data && data.comments
+    }
   },
   computed: {
     ...mapState(['user']),
+  },
+  methods: {
+    publishComment(e) {
+      e.p
+      postArticleComments(this.article.slug, {
+        comment: { body: this.commentInput },
+      }).then((res) => {
+        this.comments.push(res.data.comment)
+        this.commentInput = ''
+      })
+    },
   },
 }
 </script>
